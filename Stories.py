@@ -25,16 +25,20 @@ days = st.number_input(
 
 max_videos = st.number_input("How many videos per keyword?", min_value=1, max_value=20, value=5)
 
-keywords = [
-    "Affair Relationship Stories", "Reddit Update", "Reddit Relationship Advice",
-    "Reddit Relationship", "Reddit Cheating", "AITA Update", "Open Marriage",
-    "Open Relationship", "X BF Caught", "Stories Cheat", "X GF Reddit",
-    "AskReddit Surviving Infidelity", "GurlCan Reddit",
-    "Cheating Story Actually Happened", "Cheating Story Real",
-    "True Cheating Story", "Reddit Cheating Story", "R/Surviving Infidelity",
-    "Surviving Infidelity", "Reddit Marriage", "Wife Cheated I Can't Forgive",
-    "Reddit API", "Exposed Wife", "Cheat Exposed"
-]
+# =========================
+# User enters keywords
+# =========================
+user_input = st.text_area(
+    "✍️ Enter keywords (separate with commas):", 
+    placeholder="Example: Affair Relationship Stories, Reddit Update, Cheating Story"
+)
+
+# Convert user input into list
+if user_input.strip() != "":
+    keywords = [kw.strip() for kw in user_input.split(",")]
+else:
+    keywords = []
+
 
 if st.button("Fetch Data"):
     try:

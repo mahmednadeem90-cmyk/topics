@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 # =========================
 # YouTube API Configuration
 # =========================
-API_KEY = st.secrets["AIzaSyC_al158fXsxfZZMV0N8hWKuA_fCTGZIhc"]   # <-- yahan apni API key rakho
+API_KEY = "AIzaSyC_al158fXsxfZZMV0N8hWKuA_fCTGZIhc"
 YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search"
 YOUTUBE_VIDEO_URL = "https://www.googleapis.com/youtube/v3/videos"
 
@@ -55,6 +55,9 @@ if st.button("Fetch Data"):
 
             found_for_keyword = False
             for item in data["items"]:
+                if "videoId" not in item["id"]:
+                    continue
+
                 video_id = item["id"]["videoId"]
                 title = item["snippet"]["title"]
                 channel = item["snippet"]["channelTitle"]
@@ -77,7 +80,6 @@ if st.button("Fetch Data"):
             if not found_for_keyword:
                 st.warning(f"No valid videos fetched for keyword: {keyword}")
 
-        # Final summary
         if results_count > 0:
             st.success(f"✅ Found {results_count} results across all keywords!")
         else:

@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 # =========================
 # YouTube API Configuration
 # =========================
-API_KEY = st.secrets["YOUTUBE_API_KEY"]   # <-- yahan apni API key rakho
+API_KEY = st.secrets["AIzaSyC_al158fXsxfZZMV0N8hWKuA_fCTGZIhc"]   # <-- yahan apni API key rakho
 YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search"
 YOUTUBE_VIDEO_URL = "https://www.googleapis.com/youtube/v3/videos"
 

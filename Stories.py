@@ -15,7 +15,14 @@ YOUTUBE_VIDEO_URL = "https://www.googleapis.com/youtube/v3/videos"
 st.title("🔥 YouTube Viral Topics Tool")
 st.write("Find viral YouTube videos based on keywords & time range.")
 
-days = st.number_input("Enter Days to Search (1-30):", min_value=1, max_value=30, value=5)
+days = st.number_input(
+    "📅 How many past days of videos do you want to search? (1-30)", 
+    min_value=1, 
+    max_value=30, 
+    value=7,
+    help="Example: If you enter 7, it will fetch videos uploaded in the last 7 days."
+)
+
 max_videos = st.number_input("How many videos per keyword?", min_value=1, max_value=20, value=5)
 
 keywords = [

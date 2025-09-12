@@ -105,5 +105,21 @@ if st.button("Fetch Data"):
         else:
             st.warning("No results found across all keywords.")
 
+    
+       if all_results:
+    # Sorting options
+    sort_by = st.radio("Sort videos by:", ["Views", "Likes", "Published Date"])
+
+    # Apply sorting
+    if sort_by == "Views":
+        all_results = sorted(all_results, key=lambda x: int(x["Views"]), reverse=True)
+    elif sort_by == "Likes":
+        all_results = sorted(all_results, key=lambda x: int(x["Likes"]), reverse=True)
+    elif sort_by == "Published Date":
+        all_results = sorted(all_results, key=lambda x: x["Published"], reverse=True)
+
+    # Show results
+    st.dataframe(all_results)
+
     except Exception as e:
         st.error(f"Error: {e}")

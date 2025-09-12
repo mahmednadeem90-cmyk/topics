@@ -23,7 +23,7 @@ days = st.number_input(
     help="Example: If you enter 7, it will fetch videos uploaded in the last 7 days."
 )
 
-max_videos = st.number_input("How many videos per keyword?", min_value=1, max_value=20, value=5)
+max_videos = st.number_input("🎥 How many videos per keyword?", min_value=1, max_value=20, value=5)
 
 # =========================
 # User enters keywords
@@ -33,17 +33,19 @@ user_input = st.text_area(
     placeholder="Example: Affair Relationship Stories, Reddit Update, Cheating Story"
 )
 
-# Convert user input into list
 if user_input.strip() != "":
     keywords = [kw.strip() for kw in user_input.split(",")]
 else:
     keywords = []
 
-
+# =========================
+# Main Logic
+# =========================
 if st.button("Fetch Data"):
     try:
         start_date = (datetime.utcnow() - timedelta(days=days)).isoformat("T") + "Z"
         total_results = 0
+        all_results = []
 
         st.info(f"🔎 Searching videos uploaded in the last {days} days...")
 
@@ -65,7 +67,6 @@ if st.button("Fetch Data"):
                     st.warning(f"No videos found for keyword: {keyword}")
                     continue
 
-                found_for_keyword = False
                 for item in data["items"]:
                     if "videoId" not in item["id"]:
                         continue
@@ -92,41 +93,39 @@ if st.button("Fetch Data"):
                         st.markdown(f"[▶ Watch Video](https://www.youtube.com/watch?v={video_id})")
                         st.divider()
 
+                        # Save result for global list
+                        all_results.append({
+                            "Title": title,
+                            "Channel": channel,
+                            "Published": publish_date,
+                            "Views": views,
+                            "Likes": likes,
+                            "Video Link": f"https://www.youtube.com/watch?v={video_id}"
+                        })
+
                         total_results += 1
-                        found_for_keyword = True
                     else:
                         st.warning(f"Failed to fetch video statistics for: {title}")
 
-                if not found_for_keyword:
-                    st.warning(f"No valid videos fetched for keyword: {keyword}")
-
+        # =========================
+        # Summary + Sorting
+        # =========================
         if total_results > 0:
             st.success(f"✅ Found {total_results} results across all keywords!")
+
+            sort_by = st.radio("📊 Sort videos by:", ["Views", "Likes", "Published Date"])
+
+            if sort_by == "Views":
+                all_results = sorted(all_results, key=lambda x: int(x["Views"]), reverse=True)
+            elif sort_by == "Likes":
+                all_results = sorted(all_results, key=lambda x: int(x["Likes"]), reverse=True)
+            elif sort_by == "Published Date":
+                all_results = sorted(all_results, key=lambda x: x["Published"], reverse=True)
+
+            st.dataframe(all_results)
+
         else:
             st.warning("No results found across all keywords.")
-if total_results > 0:
-    st.success(f"✅ Found {total_results} results across all keywords!")
-
-    if all_results:
-        # Sorting options
-        sort_by = st.radio("Sort videos by:", ["Views", "Likes", "Published Date"])
-
-        # Apply sorting
-        if sort_by == "Views":
-            all_results = sorted(all_results, key=lambda x: int(x["Views"]), reverse=True)
-        elif sort_by == "Likes":
-            all_results = sorted(all_results, key=lambda x: int(x["Likes"]), reverse=True)
-        elif sort_by == "Published Date":
-            all_results = sorted(all_results, key=lambda x: x["Published"], reverse=True)
-
-        # Show results
-        st.dataframe(all_results)
-
-else:
-    st.warning("No results found across all keywords.")
-
-    # Show results
-    st.dataframe(all_results)
 
     except Exception as e:
-        st.error(f"Error: {e}")
+        st.error(f"⚠️ Error: {e}")

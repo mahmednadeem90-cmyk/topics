@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 # =========================
 # YouTube API Configuration
 # =========================
-API_KEY = "YOUR_API_KEY"   # apni YouTube API key yahan paste karein
+API_KEY = "AIzaSyC_al158fXsxfZZMV0N8hWKuA_fCTGZIhc"   # apni YouTube API key yahan paste karein
 YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search"
 YOUTUBE_VIDEO_URL = "https://www.googleapis.com/youtube/v3/videos"
 

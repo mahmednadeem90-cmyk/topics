@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 # =========================
 # YouTube API Configuration
 # =========================
-API_KEY = "AIzaSyC_al158fXsxfZZMV0N8hWKuA_fCTGZIhc"   # apni YouTube Data API key yahan daalein
+API_KEY = "YOUR_API_KEY"   # apni YouTube Data API key yahan daalein
 YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search"
 YOUTUBE_VIDEO_URL = "https://www.googleapis.com/youtube/v3/videos"
 
@@ -144,14 +144,13 @@ if st.button("Fetch Data"):
         if total_results > 0:
             st.success(f"✅ Found {total_results} results across all keywords in {country}!")
 
-            sort_by = st.radio("Sort videos by:", ["Views", "Likes", "Published Date"])
+            # ✅ Only 2 options: Views & Likes
+            sort_by = st.radio("Sort videos by:", ["Views", "Likes"])
 
             if sort_by == "Views":
                 all_results = sorted(all_results, key=lambda x: int(x["Views"]), reverse=True)
             elif sort_by == "Likes":
                 all_results = sorted(all_results, key=lambda x: int(x["Likes"]), reverse=True)
-            elif sort_by == "Published Date":
-                all_results = sorted(all_results, key=lambda x: x["Published"], reverse=True)
 
             st.dataframe(all_results)
         else:

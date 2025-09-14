@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 # =========================
 # YouTube API Configuration
 # =========================
-API_KEY = "YOUR_API_KEY"   # apni API key yahan daalein
+API_KEY = "YOUR_API_KEY"   # apni YouTube Data API key yahan daalein
 YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search"
 YOUTUBE_VIDEO_URL = "https://www.googleapis.com/youtube/v3/videos"
 
@@ -17,8 +17,20 @@ if mode == "Night Mode":
     st.markdown(
         """
         <style>
-        body { background-color: #0e1117; color: white; }
-        .stApp { background-color: #0e1117; color: white; }
+        body, .stApp {
+            background-color: #0e1117;
+            color: #fafafa;
+        }
+        .stExpander {
+            background-color: #262730;
+            color: #fafafa;
+        }
+        .stDataFrame, .stMarkdown, .stRadio, .stText, .stNumberInput {
+            color: #fafafa !important;
+        }
+        .css-1d391kg, .css-10trblm, .css-16huue1, .css-qrbaxs {
+            color: #fafafa !important;
+        }
         </style>
         """,
         unsafe_allow_html=True,
@@ -28,16 +40,17 @@ if mode == "Night Mode":
 # Streamlit UI
 # =========================
 st.title("🔥 YouTube Viral Topics Tool")
-st.write("Find viral YouTube videos based on keywords & time range.")
+st.write("Find viral YouTube videos based on keywords, country & time range.")
 
+# Days filter
 days = st.number_input(
     "📅 How many past days of videos do you want to search? (1-30)", 
     min_value=1, 
     max_value=30, 
-    value=7,
-    help="Example: If you enter 7, it will fetch videos uploaded in the last 7 days."
+    value=7
 )
 
+# Max videos filter
 max_videos = st.number_input(
     "How many videos per keyword?", 
     min_value=1, 
@@ -45,19 +58,21 @@ max_videos = st.number_input(
     value=5
 )
 
-# =========================
-# User enters keywords
-# =========================
+# Country filter
+country = st.text_input(
+    "🌍 Enter Country Code (example: US, IN, PK, GB):", 
+    value="US",
+    help="Use 2-letter ISO country codes (e.g., US=United States, IN=India, PK=Pakistan, GB=United Kingdom)"
+)
+
+# Keywords input
 user_input = st.text_area(
     "✍️ Enter keywords (separate with commas):", 
     placeholder="Example: Affair Relationship Stories, Reddit Update, Cheating Story"
 )
 
 # Convert user input into list
-if user_input.strip() != "":
-    keywords = [kw.strip() for kw in user_input.split(",")]
-else:
-    keywords = []
+keywords = [kw.strip() for kw in user_input.split(",")] if user_input.strip() else []
 
 # =========================
 # Fetch Button
@@ -68,7 +83,7 @@ if st.button("Fetch Data"):
         total_results = 0
         all_results = []
 
-        st.info(f"🔎 Searching videos uploaded in the last {days} days...")
+        st.info(f"🔎 Searching videos uploaded in the last {days} days for country: {country}...")
 
         for keyword in keywords:
             with st.expander(f"📂 {keyword}"):
@@ -78,6 +93,7 @@ if st.button("Fetch Data"):
                     "type": "video",
                     "publishedAfter": start_date,
                     "maxResults": max_videos,
+                    "regionCode": country,   # ✅ Country filter added
                     "key": API_KEY
                 }
                 response = requests.get(YOUTUBE_SEARCH_URL, params=params)
@@ -126,7 +142,7 @@ if st.button("Fetch Data"):
 
         # Sorting and Summary
         if total_results > 0:
-            st.success(f"✅ Found {total_results} results across all keywords!")
+            st.success(f"✅ Found {total_results} results across all keywords in {country}!")
 
             sort_by = st.radio("Sort videos by:", ["Views", "Likes", "Published Date"])
 
@@ -139,7 +155,7 @@ if st.button("Fetch Data"):
 
             st.dataframe(all_results)
         else:
-            st.warning("No results found across all keywords.")
+            st.warning(f"No results found for {country}.")
 
     except Exception as e:
         st.error(f"Error: {e}")
